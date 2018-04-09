@@ -1,0 +1,7 @@
+/numbase/target
+**/*.rs.bk
+.*.swp
+
+/target
+**/*.rs.bk
+Cargo.lock
