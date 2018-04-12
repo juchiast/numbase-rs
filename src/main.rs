@@ -1,5 +1,4 @@
-// Copyright 2018 Đỗ Hoàng Anh Duy. See the COPYRIGHT file
-// at the top-level directory of this distribution.
+// Copyright 2018 Đỗ Hoàng Anh Duy.
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
