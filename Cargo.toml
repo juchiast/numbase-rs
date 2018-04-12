@@ -5,7 +5,7 @@ authors = ["Do Duy"]
 
 [dependencies]
 stdweb = "0.4.2"
-yew = { git = "https://github.com/DenisKolodin/yew", rev = "d0854c" }
+yew = { git = "https://github.com/DenisKolodin/yew", rev = "8267b3a" }
 
 [profile.release]
 lto = true
