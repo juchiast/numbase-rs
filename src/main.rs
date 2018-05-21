@@ -6,14 +6,15 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+#[macro_use]
 extern crate stdweb;
 #[macro_use]
 extern crate yew;
 
 mod num;
 
-use stdweb::web::IParentNode;
 use stdweb::web::document;
+use stdweb::web::{IParentNode, IElement};
 use yew::prelude::*;
 
 type Context = ();
@@ -28,6 +29,17 @@ enum Msg {
     Input(String),
     Base(u32),
     Size(u32),
+}
+
+fn get_value(cd: ChangeData) -> u32 {
+    match cd {
+        ChangeData::Select(se) => {
+            let options = se.selected_options();
+            assert_eq!(options.len(), 1);
+            options.item(0).unwrap().get_attribute("value_").unwrap().parse().unwrap()
+        },
+        _ => unreachable!(),
+    }
 }
 
 impl Component<Context> for Model {
@@ -69,18 +81,19 @@ impl Model {
         let option = |base, text| {
             if self.base == base {
                 html! {
-                    <><option onclick=move |_| Msg::Base(base), selected=1,>{ text }</option></>
+                    <><option value_={base}, selected=1,>{ text }</option></>
                 }
             } else {
                 html! {
-                    <><option onclick=move |_| Msg::Base(base),>{ text }</option></>
+                    <><option value_={base}, >{ text }</option></>
                 }
             }
         };
         html! {
             <>
             <label for="inputBase", >{ "Input base" }</label>
-            <select id="inputBase", class="form-control", >
+            <select id="inputBase", class="form-control",
+                    onchange=|cd: ChangeData| Msg::Base(get_value(cd)), >
                 { option(10, "Decimal") }
                 { option(2, "Binary") }
                 { option(8, "Octal") }
@@ -94,18 +107,19 @@ impl Model {
         let option = |size, text| {
             if self.size == size {
                 html! {
-                    <><option onclick=move |_| Msg::Size(size), selected=1, >{ text }</option></>
+                    <><option value_={size}, selected=1, >{ text }</option></>
                 }
             } else {
                 html! {
-                    <><option onclick=move |_| Msg::Size(size), >{ text }</option></>
+                    <><option value_={size}, >{ text }</option></>
                 }
             }
         };
         html! {
             <>
             <label for="inputSize", >{ "Int size" }</label>
-            <select id="inputSize", class="form-control", >
+            <select id="inputSize", class="form-control",
+                    onchange=|cd: ChangeData| Msg::Size(get_value(cd)), >
                 { option(8, "8-bit") }
                 { option(16, "16-bit") }
                 { option(32, "32-bit") }
