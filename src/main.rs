@@ -31,7 +31,7 @@ enum Msg {
 }
 
 impl Component<Context> for Model {
-    type Msg = Msg;
+    type Message = Msg;
     type Properties = ();
 
     fn create(_: Self::Properties, _: &mut Env<Context, Self>) -> Self {
@@ -42,7 +42,7 @@ impl Component<Context> for Model {
         }
     }
 
-    fn update(&mut self, msg: Self::Msg, _context: &mut Env<Context, Self>) -> ShouldRender {
+    fn update(&mut self, msg: Self::Message, _context: &mut Env<Context, Self>) -> ShouldRender {
         match msg {
             Msg::Input(s) => self.input = s,
             Msg::Base(b) => self.base = b,
