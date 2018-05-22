@@ -6,7 +6,6 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-#[macro_use]
 extern crate stdweb;
 #[macro_use]
 extern crate yew;
@@ -14,7 +13,7 @@ extern crate yew;
 mod num;
 
 use stdweb::web::document;
-use stdweb::web::{IParentNode, IElement};
+use stdweb::web::{IElement, IParentNode};
 use yew::prelude::*;
 
 type Context = ();
@@ -29,17 +28,6 @@ enum Msg {
     Input(String),
     Base(u32),
     Size(u32),
-}
-
-fn get_value(cd: ChangeData) -> u32 {
-    match cd {
-        ChangeData::Select(se) => {
-            let options = se.selected_options();
-            assert_eq!(options.len(), 1);
-            options.item(0).unwrap().get_attribute("value_").unwrap().parse().unwrap()
-        },
-        _ => unreachable!(),
-    }
 }
 
 impl Component<Context> for Model {
@@ -78,52 +66,57 @@ impl Model {
     }
 
     fn view_control_base(&self) -> Html<Context, Self> {
-        let option = |base, text| {
-            if self.base == base {
-                html! {
-                    <><option value_={base}, selected=1,>{ text }</option></>
-                }
-            } else {
-                html! {
-                    <><option value_={base}, >{ text }</option></>
-                }
-            }
-        };
-        html! {
-            <>
-            <label for="inputBase", >{ "Input base" }</label>
-            <select id="inputBase", class="form-control",
-                    onchange=|cd: ChangeData| Msg::Base(get_value(cd)), >
-                { option(10, "Decimal") }
-                { option(2, "Binary") }
-                { option(8, "Octal") }
-                { option(16, "Hexadecimal") }
-            </select>
-            </>
-        }
+        static OPTIONS: &[(u32, &str)] = &[
+            (10, "Decimal"),
+            (2, "Binary"),
+            (8, "Octal"),
+            (16, "Hexadecimal"),
+        ];
+        Self::make_select("inputBase", "Input Base", OPTIONS, Msg::Base, self.base)
     }
 
     fn view_control_size(&self) -> Html<Context, Self> {
-        let option = |size, text| {
-            if self.size == size {
-                html! {
-                    <><option value_={size}, selected=1, >{ text }</option></>
-                }
-            } else {
-                html! {
-                    <><option value_={size}, >{ text }</option></>
-                }
+        static OPTIONS: &[(u32, &str)] = &[
+            (8, "8-bit"),
+            (16, "16-bit"),
+            (32, "32-bit"),
+            (64, "64-bit"),
+        ];
+        Self::make_select("inputSize", "Int size", OPTIONS, Msg::Size, self.size)
+    }
+
+    fn make_select<V, F>(id: &str, title: &str, v: &[(V, &str)], f: F, cur: V) -> Html<Context, Self>
+    where
+        V: std::fmt::Display + std::str::FromStr + PartialEq,
+        <V as std::str::FromStr>::Err: std::fmt::Debug,
+        F: 'static + Fn(V) -> Msg,
+    {
+        let value = move |cd: ChangeData| match cd {
+            ChangeData::Select(se) => {
+                let options = se.selected_options();
+                assert_eq!(options.len(), 1);
+                f(options
+                    .item(0)
+                    .unwrap()
+                    .get_attribute("value_")
+                    .unwrap()
+                    .parse()
+                    .unwrap())
             }
+            _ => unreachable!(),
         };
+        let iter = v.iter().map(|(v, s)| {
+            if cur == *v {
+                html! {<option value_={v}, selected=1,>{s}</option>}
+            } else {
+                html! {<option value_={v},>{s}</option>}
+            }
+        });
         html! {
             <>
-            <label for="inputSize", >{ "Int size" }</label>
-            <select id="inputSize", class="form-control",
-                    onchange=|cd: ChangeData| Msg::Size(get_value(cd)), >
-                { option(8, "8-bit") }
-                { option(16, "16-bit") }
-                { option(32, "32-bit") }
-                { option(64, "64-bit") }
+            <label for={id}, >{ title }</label>
+            <select id={id}, class="form-control", onchange={ value }, >
+                { for iter }
             </select>
             </>
         }
