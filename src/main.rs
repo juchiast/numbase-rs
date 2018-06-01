@@ -13,7 +13,7 @@ extern crate yew;
 mod num;
 
 use stdweb::web::document;
-use stdweb::web::{IElement, IParentNode};
+use stdweb::web::IParentNode;
 use yew::prelude::*;
 
 type Context = ();
@@ -60,7 +60,7 @@ impl Model {
             <input id="inputText",
                    class="form-control",
                    type="text",
-                   oninput=|e: InputData| Msg::Input(e.value), />
+                   oninput=|e| Msg::Input(e.value), />
             </>
         }
     }
@@ -76,46 +76,38 @@ impl Model {
     }
 
     fn view_control_size(&self) -> Html<Context, Self> {
-        static OPTIONS: &[(u32, &str)] = &[
-            (8, "8-bit"),
-            (16, "16-bit"),
-            (32, "32-bit"),
-            (64, "64-bit"),
-        ];
+        static OPTIONS: &[(u32, &str)] =
+            &[(8, "8-bit"), (16, "16-bit"), (32, "32-bit"), (64, "64-bit")];
         Self::make_select("inputSize", "Int size", OPTIONS, Msg::Size, self.size)
     }
 
-    fn make_select<V, F>(id: &str, title: &str, v: &[(V, &str)], f: F, cur: V) -> Html<Context, Self>
+    fn make_select<V, F>(
+        id: &str,
+        title: &str,
+        v: &[(V, &str)],
+        f: F,
+        cur: V,
+    ) -> Html<Context, Self>
     where
         V: std::fmt::Display + std::str::FromStr + PartialEq,
         <V as std::str::FromStr>::Err: std::fmt::Debug,
         F: 'static + Fn(V) -> Msg,
     {
-        let value = move |cd: ChangeData| match cd {
-            ChangeData::Select(se) => {
-                let options = se.selected_options();
-                assert_eq!(options.len(), 1);
-                f(options
-                    .item(0)
-                    .unwrap()
-                    .get_attribute("value_")
-                    .unwrap()
-                    .parse()
-                    .unwrap())
-            }
+        let value = move |e| match e {
+            ChangeData::Select(se) => f(se.raw_value().parse().unwrap()),
             _ => unreachable!(),
         };
         let iter = v.iter().map(|(v, s)| {
             if cur == *v {
-                html! {<option value_={v}, selected=1,>{s}</option>}
+                html! {<option value={v}, selected=1,>{s}</option>}
             } else {
-                html! {<option value_={v},>{s}</option>}
+                html! {<option value={v},>{s}</option>}
             }
         });
         html! {
             <>
             <label for={id}, >{ title }</label>
-            <select id={id}, class="form-control", onchange={ value }, >
+            <select id={id}, class="form-control", onchange=|e| value(e),>
                 { for iter }
             </select>
             </>
