@@ -16,8 +16,6 @@ use stdweb::web::document;
 use stdweb::web::IParentNode;
 use yew::prelude::*;
 
-type Context = ();
-
 struct Model {
     input: String,
     base: u32,
@@ -30,11 +28,11 @@ enum Msg {
     Size(u32),
 }
 
-impl Component<Context> for Model {
+impl Component for Model {
     type Message = Msg;
     type Properties = ();
 
-    fn create(_: Self::Properties, _: &mut Env<Context, Self>) -> Self {
+    fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
         Model {
             input: String::new(),
             base: 10,
@@ -42,7 +40,7 @@ impl Component<Context> for Model {
         }
     }
 
-    fn update(&mut self, msg: Self::Message, _context: &mut Env<Context, Self>) -> ShouldRender {
+    fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::Input(s) => self.input = s,
             Msg::Base(b) => self.base = b,
@@ -53,7 +51,7 @@ impl Component<Context> for Model {
 }
 
 impl Model {
-    fn view_control_text(&self) -> Html<Context, Self> {
+    fn view_control_text(&self) -> Html<Self> {
         html! {
             <>
             <label for="inputText", >{ "Input" }</label>
@@ -65,7 +63,7 @@ impl Model {
         }
     }
 
-    fn view_control_base(&self) -> Html<Context, Self> {
+    fn view_control_base(&self) -> Html<Self> {
         static OPTIONS: &[(u32, &str)] = &[
             (10, "Decimal"),
             (2, "Binary"),
@@ -75,19 +73,13 @@ impl Model {
         Self::make_select("inputBase", "Input Base", OPTIONS, Msg::Base, self.base)
     }
 
-    fn view_control_size(&self) -> Html<Context, Self> {
+    fn view_control_size(&self) -> Html<Self> {
         static OPTIONS: &[(u32, &str)] =
             &[(8, "8-bit"), (16, "16-bit"), (32, "32-bit"), (64, "64-bit")];
         Self::make_select("inputSize", "Int size", OPTIONS, Msg::Size, self.size)
     }
 
-    fn make_select<V, F>(
-        id: &str,
-        title: &str,
-        v: &[(V, &str)],
-        f: F,
-        cur: V,
-    ) -> Html<Context, Self>
+    fn make_select<V, F>(id: &str, title: &str, v: &[(V, &str)], f: F, cur: V) -> Html<Self>
     where
         V: std::fmt::Display + std::str::FromStr + PartialEq,
         <V as std::str::FromStr>::Err: std::fmt::Debug,
@@ -114,7 +106,7 @@ impl Model {
         }
     }
 
-    fn view_controls(&self) -> Html<Context, Self> {
+    fn view_controls(&self) -> Html<Self> {
         html! {
             <form>
                 <div class="form-row", >
@@ -132,7 +124,7 @@ impl Model {
         }
     }
 
-    fn view_result(&self, out_base: u32) -> Html<Context, Self> {
+    fn view_result(&self, out_base: u32) -> Html<Self> {
         html! {
             <div class="input-group", >
                 <div class="input-group-prepend", >
@@ -145,7 +137,7 @@ impl Model {
         }
     }
 
-    fn view_results(&self) -> Html<Context, Self> {
+    fn view_results(&self) -> Html<Self> {
         html! {
             <>
             { self.view_result(2) }
@@ -157,8 +149,8 @@ impl Model {
     }
 }
 
-impl Renderable<Context, Model> for Model {
-    fn view(&self) -> Html<Context, Self> {
+impl Renderable<Model> for Model {
+    fn view(&self) -> Html<Self> {
         html! {
             <div class="container", >
                 <div class="row", class="mb-2", >
@@ -179,7 +171,7 @@ impl Renderable<Context, Model> for Model {
 
 fn main() {
     yew::initialize();
-    let app: App<_, Model> = App::new(());
+    let app: App<Model> = App::new();
     let element = document().query_selector("#app").unwrap().unwrap();
     app.mount(element);
     yew::run_loop();
