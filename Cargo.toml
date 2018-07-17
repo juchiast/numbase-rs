@@ -4,8 +4,8 @@ version = "0.1.0"
 authors = ["Do Duy"]
 
 [dependencies]
-stdweb = "0.4.6"
-yew = { git = "https://github.com/DenisKolodin/yew", rev = "bde3612" }
+stdweb = "0.4.7"
+yew = { git = "https://github.com/DenisKolodin/yew", rev = "f077a9a" }
 
 [profile.release]
 lto = true
