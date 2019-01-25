@@ -4,11 +4,12 @@ version = "0.1.0"
 authors = ["Do Duy"]
 
 [dependencies]
-stdweb = "0.4.8"
-yew = { git = "https://github.com/DenisKolodin/yew", rev = "815c357" }
+stdweb = "0.4"
+yew = { git = "https://github.com/DenisKolodin/yew", rev = "2393159" }
 
 [profile.release]
 lto = true
 codegen-units = 1
 panic = "abort"
 opt-level = "z"
+debug = false

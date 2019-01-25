@@ -91,7 +91,7 @@ impl Model {
         };
         let iter = v.iter().map(|(v, s)| {
             if cur == *v {
-                html! {<option value={v}, selected=1,>{s}</option>}
+                html! {<option value={v}, selected=true,>{s}</option>}
             } else {
                 html! {<option value={v},>{s}</option>}
             }

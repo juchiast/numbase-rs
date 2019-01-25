@@ -24,9 +24,7 @@ Prepare the build environment:
 - Install the `wasm32-unknown-unknown` target: `rustup target add wasm32-unknown-unknown`
 - Install `cargo-web`: `cargo install cargo-web`
 
-To build, run `make`, which does the following things:
-- `cargo web build`
-- Copy output files to `./dist`
+To build, run `cargo web start`.
 
 ## License
 
