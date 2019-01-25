@@ -86,13 +86,9 @@ impl Model {
             ChangeData::Select(se) => f(se.raw_value().parse().unwrap()),
             _ => unreachable!(),
         };
-        let iter = v.iter().map(|(v, s)| {
-            if cur == *v {
-                html! {<option value={v}, selected=true,>{s}</option>}
-            } else {
-                html! {<option value={v},>{s}</option>}
-            }
-        });
+        let iter = v
+            .iter()
+            .map(|(v, s)| html! {<option value={v}, selected=cur == *v,>{s}</option>});
         html! {
             <>
             <label for={id}, >{ title }</label>
