@@ -6,15 +6,12 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-extern crate stdweb;
-#[macro_use]
-extern crate yew;
-
-mod num;
-
 use stdweb::web::document;
 use stdweb::web::IParentNode;
 use yew::prelude::*;
+use yew::{html, html_impl};
+
+mod num;
 
 struct Model {
     input: String,
