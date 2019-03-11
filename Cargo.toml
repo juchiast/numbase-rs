@@ -6,7 +6,7 @@ edition = "2018"
 
 [dependencies]
 stdweb = "0.4"
-yew = { git = "https://github.com/DenisKolodin/yew", rev = "2393159" }
+yew = { git = "https://github.com/DenisKolodin/yew", rev = "150e5afd4cd1df5a267c087c6bc9e374a9a9031e" }
 
 [profile.release]
 lto = true

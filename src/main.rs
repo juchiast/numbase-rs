@@ -9,7 +9,7 @@
 use stdweb::web::document;
 use stdweb::web::IParentNode;
 use yew::prelude::*;
-use yew::{html, html_impl};
+use yew::html;
 
 mod num;
 
