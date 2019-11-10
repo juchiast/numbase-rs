@@ -45,17 +45,35 @@ impl Component for Model {
         }
         true
     }
+
+    fn view(&self) -> Html<Self> {
+        html! {
+            <div class="container" >
+                <div class="row mb-2" >
+                    <div class="col-md-12" >
+                    { self.view_controls() }
+                    </div>
+                </div>
+                <div class="row" >
+                    <div class="col-md-12" >
+                    <div class="mb-1" >{ "Result:" }</div>
+                    { self.view_results() }
+                    </div>
+                </div>
+            </div>
+        }
+    }
 }
 
 impl Model {
     fn view_control_text(&self) -> Html<Self> {
         html! {
             <>
-            <label for="inputText", >{ "Input" }</label>
-            <input id="inputText",
-                   class="form-control",
-                   type="text",
-                   oninput=|e| Msg::Input(e.value), />
+            <label for="inputText" >{ "Input" }</label>
+            <input id="inputText"
+                   class="form-control"
+                   type="text"
+                   oninput=|e| Msg::Input(e.value) />
             </>
         }
     }
@@ -86,13 +104,13 @@ impl Model {
             ChangeData::Select(se) => f(se.raw_value().parse().unwrap()),
             _ => unreachable!(),
         };
-        let iter = v
+        let mut iter = v
             .iter()
             .map(|(v, s)| html! {<option value={v}, selected=cur == *v,>{s}</option>});
         html! {
             <>
-            <label for={id}, >{ title }</label>
-            <select id={id}, class="form-control", onchange=|e| value(e),>
+            <label for={id} >{ title }</label>
+            <select id={id} class="form-control" onchange=|e| value(e),>
                 { for iter }
             </select>
             </>
@@ -102,14 +120,14 @@ impl Model {
     fn view_controls(&self) -> Html<Self> {
         html! {
             <form>
-                <div class="form-row", >
-                    <div class="col-sm", >
+                <div class="form-row" >
+                    <div class="col-sm" >
                         { self.view_control_text() }
                     </div>
-                    <div class="col-sm", >
+                    <div class="col-sm" >
                         { self.view_control_base() }
                     </div>
-                    <div class="col-sm", >
+                    <div class="col-sm" >
                         { self.view_control_size() }
                     </div>
                 </div>
@@ -119,13 +137,13 @@ impl Model {
 
     fn view_result(&self, out_base: u32) -> Html<Self> {
         html! {
-            <div class="input-group", >
-                <div class="input-group-prepend", >
-                    <div class="input-group-text", style="width: 3em", >{ out_base.to_string() }</div>
+            <div class="input-group" >
+                <div class="input-group-prepend" >
+                    <div class="input-group-text" style="width: 3em" >{ out_base.to_string() }</div>
                 </div>
-                <input type="text", class="form-control", readonly=1,
-                       style="background: white",
-                       value=num::process(&self.input, self.base, out_base, self.size), />
+                <input type="text" class="form-control" readonly=1
+                       style="background: white"
+                       value=num::process(&self.input, self.base, out_base, self.size) />
             </div>
         }
     }
@@ -138,26 +156,6 @@ impl Model {
             { self.view_result(10) }
             { self.view_result(16) }
             </>
-        }
-    }
-}
-
-impl Renderable<Model> for Model {
-    fn view(&self) -> Html<Self> {
-        html! {
-            <div class="container", >
-                <div class="row", class="mb-2", >
-                    <div class="col-md-12", >
-                    { self.view_controls() }
-                    </div>
-                </div>
-                <div class="row", >
-                    <div class="col-md-12", >
-                    <div class="mb-1", >{ "Result:" }</div>
-                    { self.view_results() }
-                    </div>
-                </div>
-            </div>
         }
     }
 }

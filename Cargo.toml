@@ -5,8 +5,8 @@ authors = ["Do Duy"]
 edition = "2018"
 
 [dependencies]
-stdweb = "0.4"
-yew = { git = "https://github.com/DenisKolodin/yew", rev = "150e5afd4cd1df5a267c087c6bc9e374a9a9031e" }
+stdweb = "0.4.20"
+yew = { git = "https://github.com/yewstack/yew", rev = "c178d5273fd4375e4facf58ede6973705b25a189" }
 
 [profile.release]
 lto = true
